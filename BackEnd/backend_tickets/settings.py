@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',   # Para activar el DRF
+    'gestor',          # Para activar la apps ticket con el modelo y las vistas
 ]
 
 MIDDLEWARE = [
