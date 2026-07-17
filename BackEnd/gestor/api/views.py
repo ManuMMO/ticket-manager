@@ -7,12 +7,10 @@ from rest_framework.exceptions import ValidationError
 from gestor.models import Ticket
 from .serializers import TicketSerializer
 
-
-# GET /api/tickets/  +  POST /api/tickets/
 VALID_STATUS = {"open", "in_progress", "closed"}
 VALID_PRIORITY = {"low", "medium", "high"}
 
-
+# GET /api/tickets/  +  POST /api/tickets/
 class TicketListCreateView(generics.ListCreateAPIView):
     serializer_class = TicketSerializer
 
