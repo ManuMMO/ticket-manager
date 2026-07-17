@@ -2,23 +2,54 @@ from django.db.models import Count
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 
 from gestor.models import Ticket
 from .serializers import TicketSerializer
 
 
 # GET /api/tickets/  +  POST /api/tickets/
+VALID_STATUS = {"open", "in_progress", "closed"}
+VALID_PRIORITY = {"low", "medium", "high"}
+
+
 class TicketListCreateView(generics.ListCreateAPIView):
     serializer_class = TicketSerializer
 
     def get_queryset(self):
+
+        params = self.request.query_params
+        errors = {}
+
+        # Validación de nombres de parámetros
+        for key in params.keys():
+            if key not in ("status", "priority"):
+                errors.setdefault("invalid_param", []).append(
+                    f"Parámetro no permitido: '{key}'. Usa solo 'status' y/o 'priority'"
+                )
+
+        # Validación de los valores
+        status = params.get("status")
+        if status is not None and status not in VALID_STATUS:
+            errors["status_value"] = (
+                "Valor inválido para 'status'. "
+                "Valores permitidos: 'open', 'in_progress', 'closed'"
+            )
+
+        priority = params.get("priority")
+        if priority is not None and priority not in VALID_PRIORITY:
+            errors["priority_value"] = (
+                "Valor inválido para 'priority'. "
+                "Valores permitidos: low, medium, high."
+            )
+
+        if errors:
+            raise ValidationError(errors)
+
         # Recojo todos los tickets creados por orden descendente de fecha de creación
         qs = Ticket.objects.all().order_by("-created_at")
 
-        # Filtro por el status y la prioridad con query_params
-        status = self.request.query_params.get("status")
-        priority = self.request.query_params.get("priority")
-
+        # Filtro por el status y la prioridad con params (query_params)
         if status:
             qs = qs.filter(status=status)
         if priority:
