@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-ke05h%3)cz%3mj74(8m1$*7ax&_2&oeq3%b33ucx%po4n3sav^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Hosts configurables vía variable de entorno para entorno Docker
+import os
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(",")
+
+
 
 
 # Application definition

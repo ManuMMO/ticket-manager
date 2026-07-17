@@ -1,0 +1,10 @@
+services:
+  backend:
+    build: ./BackEnd
+    container_name: backend
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_ALLOWED_HOSTS: backend,localhost,127.0.0.1
+    volumes:
+      - ./BackEnd:/app
