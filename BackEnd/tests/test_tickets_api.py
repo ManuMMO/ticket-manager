@@ -19,6 +19,7 @@ def test_cannot_create_ticket_with_closed_status(client):
 
 @pytest.mark.django_db
 def test_closed_ticket_cannot_go_back_to_open_directly(client):
+    # CREATE es del ORM de django, al ser un insert de BBDD no valida.
     ticket = Ticket.objects.create(
         title="Ticket cerrado",
         status="closed",

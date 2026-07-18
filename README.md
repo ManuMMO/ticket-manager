@@ -52,6 +52,9 @@ Las validaciones ejecutadas en `update()` no forman parte del sistema de validac
 - **Configuración de `ALLOWED_HOSTS` vía variable de entorno**:    
 Django obtiene los hosts permitidos desde DJANGO_ALLOWED_HOSTS definido en Docker Compose, evitando hardcodear valores en el código y permitiendo que el backend acepte peticiones tanto desde localhost como desde el nombre del servicio Docker. Esta configuración es más segura y facilita despliegues en distintos entornos sin modificar el proyecto.
 
+- **Uso de Bind Mount en los contenedores**:    
+Los contenedores utilizan bind mount para sincronizar el código local con el contenedor en tiempo real. Esta elección permite desarrollar con hot‑reload sin reconstruir imágenes en cada cambio. Alternativas como usar solo imágenes o volúmenes anónimos impedirían ver los cambios durante el desarrollo y ralentizarían el flujo de trabajo.
+
 ## 🧪 Tests
 
 El backend incluye dos tests que validan las reglas de negocio más críticas del sistema:
