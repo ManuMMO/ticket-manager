@@ -43,16 +43,22 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',   # Para activar el DRF
     'gestor',          # Para activar la apps ticket con el modelo y las vistas
+    'corsheaders',    # CORS headers para permitir peticiones desde el frontend
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Para permitir CORS, va antes del CommonMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
 ]
 
 ROOT_URLCONF = 'backend_tickets.urls'

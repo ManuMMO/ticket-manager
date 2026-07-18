@@ -32,7 +32,7 @@ Esto levanta:
 - **PATCH** → Actualización del estado del ticket  
   http://localhost:8000/api/tickets/id/
 
-**Frontend (Nuxt 4):**  
+**Frontend (Nuxt 4 + TypeScript):**  
 http://localhost:3000/
 
 ## 🧠 Decisiones técnicas
@@ -54,6 +54,19 @@ Django obtiene los hosts permitidos desde DJANGO_ALLOWED_HOSTS definido en Docke
 
 - **Uso de Bind Mount en los contenedores**:    
 Los contenedores utilizan bind mount para sincronizar el código local con el contenedor en tiempo real. Esta elección permite desarrollar con hot‑reload sin reconstruir imágenes en cada cambio. Alternativas como usar solo imágenes o volúmenes anónimos impedirían ver los cambios durante el desarrollo y ralentizarían el flujo de trabajo.
+
+- **Variable de entorno `API_BASE_URL` en el frontend**:  
+Para evitar hardcodear `localhost` en el código y asegurar la comunicación correcta entre contenedores, el frontend obtiene la URL del backend mediante la variable `API_BASE_URL`.
+
+- **Uso de composable en el FrontEnd**:  
+Centraliza la lógica de la API en un composable en lugar de usar `useFetch` directamente en los componentes. Esto evita duplicación de código, mantiene la UI limpia y permite aplicar tipado y manejo de errores de forma consistente en un único punto.
+
+- **Tipado el composable `useTickets.ts`**:  
+Garantiza que las llamadas a la API y los datos del backend tienen una estructura clara y segura. Esto evita `any`, mejora el autocompletado y cumple el requisito de “tipado razonable” sin añadir validación duplicada en el frontend.
+
+- **Ignorar `node_modules` en `.dockerignore`**:  
+Se excluye `node_modules` del contexto de Docker para evitar copiar dependencias locales incompatibles con Alpine y asegurar que el contenedor instale sus propias dependencias. Esto elimina conflictos entre entornos, reduce el tamaño del build y garantiza imágenes reproducibles.
+
 
 ## 🧪 Tests
 

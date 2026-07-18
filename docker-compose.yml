@@ -8,3 +8,17 @@ services:
       DJANGO_ALLOWED_HOSTS: backend,localhost,127.0.0.1
     volumes:
       - ./BackEnd:/app
+
+  frontend:
+    build:
+      context: ./FrontEnd
+      args:
+        API_BASE_URL: http://localhost:8000
+
+    container_name: frontend
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - backend
