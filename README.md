@@ -55,6 +55,19 @@ El backend pasó de un entorno con bind mount a un despliegue basado en imagen p
 - **Uso de composable y tipado para acceso a la API**:  
 Centraliza la lógica de la API en el composable `useTickets.ts` en lugar de usar `useFetch` directamente en los componentes. Esto evita duplicación de código, mantiene la UI limpia y permite aplicar tipado y manejo de errores de forma consistente en un único punto.
 
+## 🔄 Segunda iteración
+
+- **Migración a PostgreSQL en Docker**:  
+Sustituir SQLite por PostgreSQL para mejorar concurrencia, integridad y escalabilidad. La estructura de modelos ya es compatible, así que el cambio sería transparente para la API.
+
+- **Paginación y ordenación avanzada en el listado**:  
+Mejoraría la experiencia en listados grandes añadiendo paginación y opciones de ordenación. Esto haría la aplicación más fluida y escalable cuando aumente el número de tickets.
+
+- **Documentación automática de la API con OpenAPI/Swagger**:  
+Incorporaría documentación generada automáticamente para facilitar el uso de la API y mejorar la comunicación.
+
+- **Autenticación básica**:  
+Añadiría autenticación mínima para preparar la aplicación para escenarios multiusuario y permitir permisos diferenciados.
 
 ## 🧪 Tests
 
