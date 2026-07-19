@@ -1,40 +1,55 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { TicketStatus, TicketPriority, CreateTicketPayload } from '~/types/Ticket'
+import { ref } from "vue";
+import type { Ticket, TicketStatus, TicketPriority, CreateTicketPayload } from "~/types/Ticket";
+import { statusLabels, priorityLabels } from "~/utils/ticketLabels";
 
-const emit = defineEmits<{
-  (e: 'createTicket', payload: CreateTicketPayload): Promise<void> | void
-}>()
+// Props para recibir la función de creación de ticket desde el padre
+const props = defineProps<{
+  createTicket: (payload: CreateTicketPayload) => Promise<Ticket>;
+}>();
 
-const formTitle = ref('')
-const formDescription = ref('')
-const formPriority = ref<TicketPriority>('low')
-const formStatus = ref<TicketStatus>('open')
-const businessError = ref<string | null>(null)
+// Ref para los campos del formulario y el error de negocio
+const formTitle = ref("");
+const formDescription = ref("");
+const formPriority = ref<TicketPriority>("low");
+const formStatus = ref<TicketStatus>("open");
+const businessError = ref<string | null>(null);
 
-const statusOptions: TicketStatus[] = ['open', 'in_progress', 'closed']
-const priorityOptions: TicketPriority[] = ['low', 'medium', 'high']
+const statusOptions: TicketStatus[] = ["open", "in_progress", "closed"];
+const priorityOptions: TicketPriority[] = ["low", "medium", "high"];
 
+// Maneja la creación del ticket y captura errores de negocio
 const handleCreate = async () => {
-  businessError.value = null
+  // Reinicia el error de negocio antes de intentar crear el ticket
+  businessError.value = null;
 
+  // Construye el payload para la creación del ticket
   const payload: CreateTicketPayload = {
     title: formTitle.value,
     description: formDescription.value || undefined,
     priority: formPriority.value,
     status: formStatus.value
-  }
+  };
 
   try {
-    await emit('createTicket', payload)
-    formTitle.value = ''
-    formDescription.value = ''
-    formPriority.value = 'low'
-    formStatus.value = 'open'
-  } catch (err: any) {
-    businessError.value = err?.detail || 'Error al crear el ticket'
+
+    // Llama a la función de creación de ticket proporcionada por el padre
+    await props.createTicket(payload);
+
+    // Si la creación es exitosa, reinicia los campos del formulario
+    formTitle.value = "";
+    formDescription.value = "";
+    formPriority.value = "low";
+    formStatus.value = "open";
+  } catch (err: unknown) {
+
+    // Si ocurre un error, captura el mensaje de error de negocio
+    businessError.value =
+      typeof err === "string"
+        ? err
+        : "Error al crear el ticket";
   }
-}
+};
 </script>
 
 <template>
@@ -58,16 +73,16 @@ const handleCreate = async () => {
         <label>Prioridad</label>
         <select v-model="formPriority">
           <option v-for="p in priorityOptions" :key="p" :value="p">
-            {{ p }}
+            {{ priorityLabels[p] }}
           </option>
         </select>
       </div>
 
       <div>
-        <label>Status</label>
+        <label>Estado</label>
         <select v-model="formStatus">
           <option v-for="s in statusOptions" :key="s" :value="s">
-            {{ s }}
+            {{ statusLabels[s] }}
           </option>
         </select>
       </div>

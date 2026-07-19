@@ -46,26 +46,14 @@ Toda la lógica de negocio del ticket (creación sin estado closed y transición
 - **Validación estricta de filtros en la vista**:  
 Valido los filtros `status` y `priority` directamente en la vista porque es la capa que interpreta la petición HTTP y donde DRF expone `request.query_params`. Los serializers solo procesan datos del body y las URLs únicamente definen rutas, así que no pueden validar parámetros de consulta.
 
-- **Gestión manual del campo en `update()`**:  
-Las validaciones ejecutadas en `update()` no forman parte del sistema de validación de campos de DRF, por lo que los errores no se asignan automáticamente. Para mantener una estructura de respuesta coherente, se fuerza explícitamente la asociación del error al campo **status**.
+- **Configuración mediante variable de entorno**:    
+Tanto `DJANGO_ALLOWED_HOSTS` como `API_BASE_URL` se gestionan vía variables de entorno definidas en Docker Compose. Esto evita hardcodear hosts o URLs, permite que los contenedores se comuniquen correctamente y facilita despliegues en distintos entornos sin modificar el código.
 
-- **Configuración de `ALLOWED_HOSTS` vía variable de entorno**:    
-Django obtiene los hosts permitidos desde DJANGO_ALLOWED_HOSTS definido en Docker Compose, evitando hardcodear valores en el código y permitiendo que el backend acepte peticiones tanto desde localhost como desde el nombre del servicio Docker. Esta configuración es más segura y facilita despliegues en distintos entornos sin modificar el proyecto.
+- **Contenedores orientados a reproducibilidad**:  
+El backend pasó de un entorno con bind mount a un despliegue basado en imagen para asegurar que las dependencias se instalan dentro del contenedor. El frontend sigue la misma estrategia por los requisitos de Nuxt. Además, `.dockerignore` excluye `node_modules` para evitar copiar dependencias locales incompatibles y reducir el contexto de build.
 
-- **Uso de Bind Mount en los contenedores**:    
-Los contenedores utilizan bind mount para sincronizar el código local con el contenedor en tiempo real. Esta elección permite desarrollar con hot‑reload sin reconstruir imágenes en cada cambio. Alternativas como usar solo imágenes o volúmenes anónimos impedirían ver los cambios durante el desarrollo y ralentizarían el flujo de trabajo.
-
-- **Variable de entorno `API_BASE_URL` en el frontend**:  
-Para evitar hardcodear `localhost` en el código y asegurar la comunicación correcta entre contenedores, el frontend obtiene la URL del backend mediante la variable `API_BASE_URL`.
-
-- **Uso de composable en el FrontEnd**:  
-Centraliza la lógica de la API en un composable en lugar de usar `useFetch` directamente en los componentes. Esto evita duplicación de código, mantiene la UI limpia y permite aplicar tipado y manejo de errores de forma consistente en un único punto.
-
-- **Tipado el composable `useTickets.ts`**:  
-Garantiza que las llamadas a la API y los datos del backend tienen una estructura clara y segura. Esto evita `any`, mejora el autocompletado y cumple el requisito de “tipado razonable” sin añadir validación duplicada en el frontend.
-
-- **Ignorar `node_modules` en `.dockerignore`**:  
-Se excluye `node_modules` del contexto de Docker para evitar copiar dependencias locales incompatibles con Alpine y asegurar que el contenedor instale sus propias dependencias. Esto elimina conflictos entre entornos, reduce el tamaño del build y garantiza imágenes reproducibles.
+- **Uso de composable y tipado para acceso a la API**:  
+Centraliza la lógica de la API en el composable `useTickets.ts` en lugar de usar `useFetch` directamente en los componentes. Esto evita duplicación de código, mantiene la UI limpia y permite aplicar tipado y manejo de errores de forma consistente en un único punto.
 
 
 ## 🧪 Tests

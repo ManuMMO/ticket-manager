@@ -3,8 +3,13 @@ import TicketFilters from '~/components/TicketFilters.vue'
 import TicketList from '~/components/TicketList.vue'
 import TicketForm from '~/components/TicketForm.vue'
 import { useTickets } from '~/composables/useTickets'
-import type { TicketStatus, TicketPriority } from '~/types/Ticket'
+import type {
+  TicketStatus,
+  TicketPriority,
+  CreateTicketPayload
+} from '~/types/Ticket'
 
+// Composable maneja los datos y la lógica de negocio de los tickets
 const {
   status,
   priority,
@@ -16,13 +21,31 @@ const {
   updateStatus
 } = useTickets()
 
-const handleFilters = (newStatus: TicketStatus | null, newPriority: TicketPriority | null) => {
+// actualiza los filtros y refresca la lista de tickets, en el composable
+const handleFilters = (
+  newStatus: TicketStatus | null,
+  newPriority: TicketPriority | null
+) => {
   status.value = newStatus
   priority.value = newPriority
   refresh()
 }
 
+// GET - refresco de lista y sus filtros, no reinicia la página, solo pide los datos de nuevo al backend
 const handleRefresh = () => refresh()
+
+// POST - crea el ticket, si falla devuelve un error, si no, refresca la lista de tickets
+const handleCreateTicket = async (payload: CreateTicketPayload) => {
+  return await createTicket(payload)
+}
+
+// PATCH - actualiza el estado del ticket, si falla devuelve un error, si no, refresca la lista de tickets
+const handleUpdateStatus = async (
+  id: number,
+  newStatus: TicketStatus
+) => {
+ await updateStatus(id, newStatus)
+}
 </script>
 
 <template>
@@ -32,6 +55,7 @@ const handleRefresh = () => refresh()
       <button type="button" @click="handleRefresh">Refrescar</button>
     </header>
 
+    // Filtros de estado y prioridad, emite evento al padre para actualizar los filtros y refrescar la lista
     <TicketFilters
       :status="status"
       :priority="priority"
@@ -42,32 +66,18 @@ const handleRefresh = () => refresh()
       :tickets="data ?? null"
       :pending="pending"
       :error="error"
-      @updateStatus="updateStatus"
+      :update-status="handleUpdateStatus"
     />
 
     <TicketForm
-      @createTicket="createTicket"
+      :create-ticket="handleCreateTicket"
     />
   </main>
 </template>
 
 <style scoped>
-.page {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1.5rem;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
 button {
-  padding: 0.6rem;
+  padding: .6rem;
   border: none;
   border-radius: 4px;
   background: #eee;

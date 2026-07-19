@@ -24,7 +24,9 @@ class TicketSerializer(serializers.ModelSerializer):
             
             # Los errores lanzados en update() no se asocian a ningún campo. Hay que indicar 'status' manualmente.
             raise serializers.ValidationError({
-                "status" : "Un ticket 'cerrado' no puede volver al estado 'Abierto' directamente. Debe pasar por 'En progreso'."
+                "status": [
+                    "Un ticket 'cerrado' no puede volver al estado 'Abierto' directamente. Debe pasar por 'En progreso'."
+                ]
             })
 
         return super().update(instance, validated_data)
