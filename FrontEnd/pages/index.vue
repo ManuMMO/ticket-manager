@@ -55,7 +55,7 @@ const handleUpdateStatus = async (
       <button type="button" @click="handleRefresh">Refrescar</button>
     </header>
 
-    // Filtros de estado y prioridad, emite evento al padre para actualizar los filtros y refrescar la lista
+    <!-- Filtros de estado y prioridad, emite evento al padre para actualizar los filtros y refrescar la lista -->
     <TicketFilters
       :status="status"
       :priority="priority"
