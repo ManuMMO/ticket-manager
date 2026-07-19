@@ -7,6 +7,8 @@ Todo se levanta con un solo comando usando **Docker Compose**.
 Desde la raíz del repositorio:  
 
 ```bash
+git clone https://github.com/ManuMMO/ticket-manager
+cd ticket-manager
 docker compose up
 ```
 
