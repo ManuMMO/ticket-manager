@@ -7,13 +7,13 @@ services:
       - "8000:8000"
 
     environment:
-      DJANGO_ALLOWED_HOSTS: backend,localhost,127.0.0.1
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
 
   frontend:
     build:
       context: ./FrontEnd
       args:
-        API_BASE_URL: http://localhost:8000
+        API_BASE_URL: ${API_BASE_URL}
 
     container_name: frontend
 
