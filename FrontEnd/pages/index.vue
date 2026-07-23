@@ -28,7 +28,6 @@ const handleFilters = (
 ) => {
   status.value = newStatus
   priority.value = newPriority
-  refresh()
 }
 
 // GET - refresco de lista y sus filtros, no reinicia la página, solo pide los datos de nuevo al backend
