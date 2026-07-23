@@ -20,5 +20,5 @@ COPY . .
 # Exponer el puerto del backend
 EXPOSE 8000
 
-# Comando de arranque del servidor Django
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Comando de arranque del servidor Django + migraciones
+CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
